@@ -46,8 +46,21 @@ var viewAnswers=0;
 var correctAnswers=0;
 var quizOver= false;
 var selectedAnswer= [];
-    var correct = 25;
+    var c = 25;
     var t;
+
+    function startGame() {
+        console.log ('started')
+        startButton.classList.add ( 'hide')
+        questionContainer.classList.remove ('hide')
+    
+        setNextQuestion()
+    }
+    
+    function setNextQuestion() {
+        showingQuestion(currentQuestion)
+    }
+
             $(document).ready(function()
             {
                 displayCurrentQuestion();
@@ -64,15 +77,18 @@ var selectedAnswer= [];
                     if (currentQuestion ==1){
                         $(".preButton").attr('disabled', 'disabled')
                     }
+
                 currentQuestion--;
-                if (currentQuestion<questions.length){
+                if (currentQuestion < questions.length) {
                     displayCurrentQuestion();
-                }
-                else {
-                    if (viewAnswers == 3){ return false; }
-                    currentQuestion =0; viewAnswers=3;
+                
+                }else {
+
+                    if (viewAnswers == 3) { return false; }
+                    currentQuestion = 0; viewAnswers = 3;
                     viewResults();
                 }
+            }
             });
 
 
@@ -88,20 +104,6 @@ nextButton.addEventListener ('click',() => {
     currentQuestionIndex++
 })
 
-function startGame() {
-    console.log ('started')
-    startButton.classList.add ( 'hide')
-    currentQuestionIndex = 0
-    questionContainer.classList.remove ('hide')
-
-    setNextQuestion()
-}
-
-function setNextQuestion() {
-    showingQuestion(currentQuestionIndex)
-}
-
-
 function showQuestion(question){
     
     questionElement.innertext = question.question
@@ -114,45 +116,12 @@ function showQuestion(question){
         }
         button.addEventListener('click', selectedAnswer)
         answerButtonElement.appendChild(button)
-    })
-
-}
-
-function selectQuestion(e){
-    var selectButton = e.target
-    var correct = selectedButton.dataset.correct
-    
-    setStatusClass =(document.body.correct)
-    Array.from(answerButtonElement.children).forEach(button => {
-        setStatusClass(button, button,dataset.correct)
-    })
-
-    if (currentQuestionIndex){
-
-     nextButton.classList.remove('hide')
-    } else {
-        startButton.innerText='Restart'
-        startButton.classList.remove('hide')
-    }
-}
-
-/*function setStatusClass(element, correct){
-    clearStatusClass(element)
-        if (correct){
-            element.classList.add ( 'correct')
-        } else{
-            element.classList.add ( 'wrong')
-        }
-}*/
-
-function clearStatusClass(element){
-    element.classList.add ( 'correct')
-    element.classList.add ( 'wrong')
-}
 
 
+	setTimeout(function()
+		{
+			viewResults();
+		},3000);
 
-
-
-
+currentQuestion++;
 
