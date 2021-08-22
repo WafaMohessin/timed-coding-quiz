@@ -1,4 +1,5 @@
 
+
 var questions = [
     {
         question: 'What is console.log doing?',
@@ -37,7 +38,42 @@ var questions = [
             {text:'to get element by class', correct:false},
         ]
     },
-]
+];
+
+
+var currentQuestion =0;
+var viewAnswers=0;
+var correctAnswers=0;
+var quizOver= false;
+var selectedAnswer= [];
+    var correct = 25;
+    var t;
+            $(document).ready(function()
+            {
+                displayCurrentQuestion();
+                $(this).find(".quizMessage").hide();
+                $(this).find(".preButton").attr('disabled', 'disabled');
+
+                timeCount();
+
+                $(this).find(".preButton").on ("click", function() {
+                    
+                    if (!quizOver)
+                {
+                    if(currentQuestion=0){ return false; }
+                    if (currentQuestion ==1){
+                        $(".preButton").attr('disabled', 'disabled')
+                    }
+                currentQuestion--;
+                if (currentQuestion<questions.length){
+                    displayCurrentQuestion();
+                }
+                else {
+                    if (viewAnswers == 3){ return false; }
+                    currentQuestion =0; viewAnswers=3;
+                    viewResults();
+                }
+            });
 
 
 var startButton = document.getElementById ('start-btn')
