@@ -1,127 +1,155 @@
-
-
 var questions = [
-    {
-        question: 'What is console.log doing?',
-        answers:[
-            { text:'External files make your code organized and easier to maintain', correct:true },
-            {text:'Internal drive', correct:false},
-            {text:'Internal memory', correct:false},
-            {text:'Medical tool', correct:false},
-        ]
-    },
+  {
+    question: "What is console.log doing?",
+    choices: [
+      "External files make your code organized and easier to maintain",
+      "Internal drive",
+      "Internal memory",
+      "Medical tool",
+    ],
+    answer: "External files make your code organized and easier to maintain",
+  },
 
-    {
-        question: 'What is primitive?',
-        answers:[
-            { text:'Primitive data types include undefined, string, number and boolean', correct:true },
-            {text:'String only', correct:false},
-            {text:'Database', correct:false},
-            {text:'Javascript element', correct:false},
-        ]
-    },
-    {
-        question: 'What is a string?',
-        answers:[
-            { text:'A string is a series of characters and is surrounded by quotes', correct:true },
-            {text:'a tool to link two variables', correct:false},
-            {text:'a boolean givs always true answer', correct:false},
-            {text:'HTML tags', correct:false},
-        ]
-    },
-    {
-        question: 'Why do we use the array?',
-        answers:[
-            { text:'To store groups of data in a single variable', correct:true },
-            {text:'to list values', correct:false},
-            {text:'to do shortcut for code', correct:false},
-            {text:'to get element by class', correct:false},
-        ]
-    },
+  {
+    question: "What is primitive?",
+    choices: [
+      "String only",
+      "Javascript element",
+      "Primitive data types include undefined, string, number and boolean",
+      "Database",
+    ],
+    answer:
+      "Primitive data types include undefined, string, number and boolean",
+  },
+  {
+    question: "What is a string?",
+    choices: [
+      "a tool to link two variables",
+      "a boolean givs always true answer",
+      "HTML tags",
+      "A string is a series of characters and is surrounded by quotes",
+    ],
+    answer: "A string is a series of characters and is surrounded by quotes",
+  },
+  {
+    question: "Why do we use the array?",
+    choices: [
+      "To store groups of data in a single variable",
+      "to list values",
+      "to do shortcut for code",
+      "to get element by class",
+    ],
+    answer: "To store groups of data in a single variable",
+  },
 ];
 
+var currentQuestionIndex = 0;
 
-var currentQuestion =0;
-var viewAnswers=0;
-var correctAnswers=0;
-var quizOver= false;
-var selectedAnswer= [];
-    var c = 25;
-    var t;
+var time = 75;
+var timer;
+var startContainer = document.getElementById("start");
+var startButton = document.getElementById("btn-1");
+var nextButton = document.getElementById("btn-2");
+var questionContainer = document.getElementById("question-container");
+var timeEl = document.getElementById("time");
+var optionsEl = document.getElementById("options");
+var submitBtn = document.getElementById("submit");
+var answerButtonElement = document.getElementById("answer-btn");
+var initials = document.getElementById("initials")
 
-    function startGame() {
-        console.log ('started')
-        startButton.classList.add ( 'hide')
-        questionContainer.classList.remove ('hide')
-    
-        setNextQuestion()
+function startGame() {
+  console.log("started");
+  timeEl.textContent = time;
+  startContainer.setAttribute("class", "hide");
+  questionContainer.removeAttribute("class");
+
+  timer = setInterval(function () {
+    time--;
+    timeEl.textContent = time;
+
+    if (time <= 0) {
+      endGame();
     }
-    
-    function setNextQuestion() {
-        showingQuestion(currentQuestion)
+  }, 1000);
+
+  setNextQuestion();
+}
+
+function setNextQuestion() {
+  var currentQuestion = questions[currentQuestionIndex];
+
+  var questionTitle = document.getElementById("question");
+  questionTitle.textContent = currentQuestion.question;
+
+  optionsEl.innerHTML = "";
+
+  currentQuestion.choices.forEach(function (choice, i) {
+    var optionBtn = document.createElement("button");
+    optionBtn.setAttribute("class", "choice");
+    optionBtn.setAttribute("value", choice);
+
+    optionBtn.textContent = choice;
+
+    optionBtn.onclick = answerClick;
+
+    optionsEl.append(optionBtn);
+  });
+}
+
+function answerClick() {
+  if (this.value !== questions[currentQuestionIndex].answer) {
+    time -= 10;
+    if (time < 0) {
+      time = 0;
+    }
+  }
+
+  currentQuestionIndex++;
+
+  if (currentQuestionIndex === questions.length) {
+    endGame();
+  }
+  {
+    setNextQuestion();
+  }
+}
+
+function endGame() {
+  console.log("end");
+  //stop time
+  clearInterval(timer);
+  var timeContainer = document.getElementById("timeContainer");
+  timeContainer.setAttribute("class", "hide");
+
+  //showe the end container
+  var endContainer = document.getElementById("end");
+  endContainer.removeAttribute("class");
+
+  //hide the questions container
+  questionContainer.setAttribute("class", "hide");
+
+  //display high score
+  var finalScore = document.getElementById("final-score");
+  finalScore.textContent = time;
+}
+
+//grab initials and save time into local storage
+//save score and intials as object. make sure they are pushed into an array into local storage
+function saveScore() {
+
+    var showFinalScore= {
+        initials: initials.value,
+        time: time
     }
 
-            $(document).ready(function()
-            {
-                displayCurrentQuestion();
-                $(this).find(".quizMessage").hide();
-                $(this).find(".preButton").attr('disabled', 'disabled');
+    var highscores =JSON.parse(localStorage.getItem('highscores')) || [];
 
-                timeCount();
+    highscores.push(showFinalScore);
+    localStorage.setItem('highscores', JSON.stringify(highscores));
 
-                $(this).find(".preButton").on ("click", function() {
-                    
-                    if (!quizOver)
-                {
-                    if(currentQuestion=0){ return false; }
-                    if (currentQuestion ==1){
-                        $(".preButton").attr('disabled', 'disabled')
-                    }
+}
 
-                currentQuestion--;
-                if (currentQuestion < questions.length) {
-                    displayCurrentQuestion();
-                
-                }else {
+startButton.addEventListener("click", startGame);
+submitBtn.addEventListener("click", saveScore);
 
-                    if (viewAnswers == 3) { return false; }
-                    currentQuestion = 0; viewAnswers = 3;
-                    viewResults();
-                }
-            }
-            });
-
-
-var startButton = document.getElementById ('start-btn')
-var nextButton = document.getElementById ('next-btn')
-var questionContainer = document.getElementById ('question-container')
-
-var questionElement = document.createElement('question')
-var answerButtonElement= document.getElementById('answer-btn') 
-
-startButton.addEventListener ('click',startGame)
-nextButton.addEventListener ('click',() => {
-    currentQuestionIndex++
-})
-
-function showQuestion(question){
-    
-    questionElement.innertext = question.question
-    question.answer.forEach (answer => {
-        var button = document.createElement('button')
-        button.classList.add ( 'btn')
-
-        if (answer.correct){
-            button.dataset.correct =answer.correct
-        }
-        button.addEventListener('click', selectedAnswer)
-        answerButtonElement.appendChild(button)
-
-
-	setTimeout(function()
-		{
-			viewResults();
-		},3000);
-
-currentQuestion++;
 

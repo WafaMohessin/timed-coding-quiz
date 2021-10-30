@@ -1,4 +1,6 @@
 # timed-coding-quiz
+
+![app screen shot]()
 1. Created html code 
     - creating tow main divs (Cotainer and Control)
     - Controls for making start and next buttons.
